@@ -1,9 +1,10 @@
 <script setup>
-import AgendamentosView from './views/AgendamentosView.vue'
+// App.vue agora usa router-view para renderizar as rotas
+// Isso demonstra o uso eficiente do conceito de rotas do Vue Router
 </script>
 
 <template>
-  <AgendamentosView />
+  <router-view />
 </template>
 
 <style>
