@@ -13,6 +13,8 @@ export function useAgendamentos() {
   })
   const ordenacao = ref('DESC') // 'ASC' ou 'DESC'
   const busca = ref('') // Termo de busca por médico ou paciente
+  const dataCriacaoFiltro = ref('') // Filtro por data de criação
+  const dataAgendamentoFiltro = ref('') // Filtro por data de agendamento
   const loading = ref(false)
   const error = ref(null)
 
@@ -25,29 +27,55 @@ export function useAgendamentos() {
     const startTime = Date.now()
 
     try {
-      // Se a ordenação ou busca foi alterada, volta para a primeira página
+      // Se a ordenação, busca, datas ou itensPorPagina foi alterada, volta para a primeira página
       if (
         (params.ordenacao && params.ordenacao !== ordenacao.value) ||
-        (params.busca !== undefined && params.busca !== busca.value)
+        (params.busca !== undefined && params.busca !== busca.value) ||
+        (params.dataCriacao !== undefined && params.dataCriacao !== dataCriacaoFiltro.value) ||
+        (params.dataAgendamento !== undefined &&
+          params.dataAgendamento !== dataAgendamentoFiltro.value) ||
+        (params.itensPorPagina && params.itensPorPagina !== paginacao.value.itensPorPagina)
       ) {
         params.paginaAtual = 1
       }
 
       const ordenacaoAtual = params.ordenacao || ordenacao.value
       const buscaAtual = params.busca !== undefined ? params.busca : busca.value
+      const dataCriacaoAtual =
+        params.dataCriacao !== undefined ? params.dataCriacao : dataCriacaoFiltro.value
+      const dataAgendamentoAtual =
+        params.dataAgendamento !== undefined ? params.dataAgendamento : dataAgendamentoFiltro.value
+      const itensPorPaginaAtual = params.itensPorPagina || paginacao.value.itensPorPagina
+
+      // Normalizar os valores de data - enviar null se vazio, senão enviar a string
+      const dataCriacaoParam =
+        dataCriacaoAtual && typeof dataCriacaoAtual === 'string' && dataCriacaoAtual.trim() !== ''
+          ? dataCriacaoAtual.trim()
+          : null
+      const dataAgendamentoParam =
+        dataAgendamentoAtual &&
+        typeof dataAgendamentoAtual === 'string' &&
+        dataAgendamentoAtual.trim() !== ''
+          ? dataAgendamentoAtual.trim()
+          : null
 
       const response = await buscarAgendamentos({
         paginaAtual: params.paginaAtual || paginacao.value.paginaAtual,
-        itensPorPagina: params.itensPorPagina || paginacao.value.itensPorPagina,
-        dataCriacao: params.dataCriacao || null,
+        itensPorPagina: itensPorPaginaAtual,
+        dataCriacao: dataCriacaoParam,
+        dataAgendamento: dataAgendamentoParam,
         busca: buscaAtual || null,
         ordenacao: ordenacaoAtual
       })
+
+      paginacao.value.itensPorPagina = itensPorPaginaAtual
 
       agendamentos.value = response.data || []
       paginacao.value = response.paginacao || paginacao.value
       ordenacao.value = ordenacaoAtual
       busca.value = buscaAtual
+      dataCriacaoFiltro.value = dataCriacaoAtual
+      dataAgendamentoFiltro.value = dataAgendamentoAtual
     } catch (err) {
       error.value = err.message || 'Erro ao carregar agendamentos'
       console.error('Erro ao carregar agendamentos:', err)
@@ -69,7 +97,9 @@ export function useAgendamentos() {
       await carregarAgendamentos({
         paginaAtual: paginacao.value.paginaAtual + 1,
         ordenacao: ordenacao.value,
-        busca: busca.value
+        busca: busca.value,
+        dataCriacao: dataCriacaoFiltro.value,
+        dataAgendamento: dataAgendamentoFiltro.value
       })
     }
   }
@@ -79,7 +109,9 @@ export function useAgendamentos() {
       await carregarAgendamentos({
         paginaAtual: paginacao.value.paginaAtual - 1,
         ordenacao: ordenacao.value,
-        busca: busca.value
+        busca: busca.value,
+        dataCriacao: dataCriacaoFiltro.value,
+        dataAgendamento: dataAgendamentoFiltro.value
       })
     }
   }
@@ -89,7 +121,9 @@ export function useAgendamentos() {
     await carregarAgendamentos({
       ordenacao: novaOrdenacao,
       paginaAtual: 1,
-      busca: busca.value
+      busca: busca.value,
+      dataCriacao: dataCriacaoFiltro.value,
+      dataAgendamento: dataAgendamentoFiltro.value
     })
   }
 
@@ -98,7 +132,9 @@ export function useAgendamentos() {
       await carregarAgendamentos({
         paginaAtual: numeroPagina,
         ordenacao: ordenacao.value,
-        busca: busca.value
+        busca: busca.value,
+        dataCriacao: dataCriacaoFiltro.value,
+        dataAgendamento: dataAgendamentoFiltro.value
       })
     }
   }
@@ -107,7 +143,9 @@ export function useAgendamentos() {
     await carregarAgendamentos({
       busca: termoBusca,
       paginaAtual: 1,
-      ordenacao: ordenacao.value
+      ordenacao: ordenacao.value,
+      dataCriacao: dataCriacaoFiltro.value,
+      dataAgendamento: dataAgendamentoFiltro.value
     })
   }
 
@@ -129,6 +167,8 @@ export function useAgendamentos() {
     ordenacao,
     ordenacaoLabel,
     busca,
+    dataCriacaoFiltro,
+    dataAgendamentoFiltro,
     loading,
     error,
     carregarAgendamentos,

@@ -5,7 +5,8 @@ const API_BASE_URL = '/api'
  * @param {Object} params - Parâmetros de busca
  * @param {number} params.paginaAtual - Número da página atual
  * @param {number} params.itensPorPagina - Quantidade de itens por página
- * @param {string} params.dataCriacao - Filtro por data de criação (ISO 8601)
+ * @param {string} params.dataCriacao - Filtro por data de criação (YYYY-MM-DD)
+ * @param {string} params.dataAgendamento - Filtro por data de agendamento (YYYY-MM-DD)
  * @param {string} params.busca - Busca por médico ou paciente
  * @param {string} params.ordenacao - Ordenação: 'ASC' ou 'DESC' (padrão: 'DESC')
  * @returns {Promise<Object>} Resposta da API com dados e paginação
@@ -15,6 +16,7 @@ export async function buscarAgendamentos(params = {}) {
     paginaAtual = 1,
     itensPorPagina = 10,
     dataCriacao = null,
+    dataAgendamento = null,
     busca = null,
     ordenacao = 'DESC'
   } = params
@@ -25,8 +27,12 @@ export async function buscarAgendamentos(params = {}) {
     ordenacao: ordenacao.toUpperCase()
   })
 
-  if (dataCriacao) {
-    queryParams.append('dataCriacao', dataCriacao)
+  if (dataCriacao && dataCriacao.trim() !== '') {
+    queryParams.append('dataCriacao', dataCriacao.trim())
+  }
+
+  if (dataAgendamento && dataAgendamento.trim() !== '') {
+    queryParams.append('dataAgendamento', dataAgendamento.trim())
   }
 
   if (busca && busca.trim()) {

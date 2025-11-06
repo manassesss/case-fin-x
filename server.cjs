@@ -21,11 +21,22 @@ server.get('/api/agendamentos', (req, res) => {
   const paginaAtual = parseInt(query.paginaAtual) || 1
   const itensPorPagina = parseInt(query.itensPorPagina) || 10
   const dataCriacao = query.dataCriacao
+  const dataAgendamento = query.dataAgendamento
   const busca = query.busca // Busca por médico ou paciente
   const ordenacao = query.ordenacao || 'DESC' // ASC ou DESC, padrão DESC (mais recente primeiro)
 
+  console.log('Query params recebidos:', {
+    paginaAtual,
+    itensPorPagina,
+    dataCriacao: dataCriacao || '(não fornecido)',
+    dataAgendamento: dataAgendamento || '(não fornecido)',
+    busca: busca || '(não fornecido)',
+    ordenacao
+  })
+
   // Buscar todos os agendamentos
   let agendamentos = loadAgendamentos()
+  console.log('Total de agendamentos antes dos filtros:', agendamentos.length)
 
   // Filtrar por busca (médico ou paciente) se fornecido
   if (busca && busca.trim()) {
@@ -37,13 +48,45 @@ server.get('/api/agendamentos', (req, res) => {
     })
   }
 
-  // Filtrar por data se fornecido
-  if (dataCriacao) {
-    const filterDate = new Date(dataCriacao).toISOString().split('T')[0]
+  // Filtrar por data de criação se fornecido
+  if (dataCriacao && dataCriacao.trim() !== '') {
+    // Normalizar a data de filtro para YYYY-MM-DD (remover horário se houver)
+    const filterDate = dataCriacao.trim().split('T')[0]
     agendamentos = agendamentos.filter(item => {
-      const itemDate = new Date(item.dataCriacao).toISOString().split('T')[0]
+      if (!item.dataCriacao) return false
+      // Extrair apenas a parte da data (YYYY-MM-DD) sem converter para Date
+      // Isso evita problemas de fuso horário
+      const itemDate = item.dataCriacao.split('T')[0]
       return itemDate === filterDate
     })
+  }
+
+  // Filtrar por data de agendamento se fornecido
+  if (dataAgendamento && dataAgendamento.trim() !== '') {
+    // Normalizar a data de filtro para YYYY-MM-DD (remover horário se houver)
+    const filterDate = dataAgendamento.trim().split('T')[0]
+    console.log('=== FILTRO DATA AGENDAMENTO ===')
+    console.log('Data recebida:', dataAgendamento)
+    console.log('Data normalizada:', filterDate)
+    console.log('Total antes do filtro:', agendamentos.length)
+    
+    const antesDoFiltro = agendamentos.length
+    agendamentos = agendamentos.filter(item => {
+      if (!item.dataAgendamento) {
+        console.log(`Item ${item.id}: sem dataAgendamento`)
+        return false
+      }
+      // Extrair apenas a parte da data (YYYY-MM-DD) sem converter para Date
+      // Isso evita problemas de fuso horário
+      const itemDate = item.dataAgendamento.split('T')[0]
+      const match = itemDate === filterDate
+      if (match) {
+        console.log(`✓ Match: Item ${item.id} - ${itemDate} === ${filterDate}`)
+      }
+      return match
+    })
+    console.log(`Total depois do filtro: ${agendamentos.length} (era ${antesDoFiltro})`)
+    console.log('=== FIM FILTRO DATA AGENDAMENTO ===')
   }
 
   // Ordenar por data de criação
@@ -68,6 +111,7 @@ server.get('/api/agendamentos', (req, res) => {
     nextParams.set('itensPorPagina', itensPorPagina)
     if (busca) nextParams.set('busca', busca)
     if (dataCriacao) nextParams.set('dataCriacao', dataCriacao)
+    if (dataAgendamento) nextParams.set('dataAgendamento', dataAgendamento)
     nextParams.set('ordenacao', ordenacao)
   }
   const nextPageUrl = paginaAtual < totalDePaginas ? `${baseUrl}?${nextParams.toString()}` : null
@@ -78,6 +122,7 @@ server.get('/api/agendamentos', (req, res) => {
     prevParams.set('itensPorPagina', itensPorPagina)
     if (busca) prevParams.set('busca', busca)
     if (dataCriacao) prevParams.set('dataCriacao', dataCriacao)
+    if (dataAgendamento) prevParams.set('dataAgendamento', dataAgendamento)
     prevParams.set('ordenacao', ordenacao)
   }
   const prevPageUrl = paginaAtual > 1 ? `${baseUrl}?${prevParams.toString()}` : null

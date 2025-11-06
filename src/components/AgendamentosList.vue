@@ -23,12 +23,40 @@
         <div
           class="inline-block w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin"
         ></div>
-        <p class="text-text mt-4">Carregando agendamentos...</p>
+        <!-- <p class="text-text mt-4">Carregando agendamentos...</p> -->
       </div>
 
       <!-- Error State -->
-      <div v-if="error" class="bg-red-900/50 border border-red-500/50 rounded-xl p-6 mb-6">
-        <p class="text-red-200 m-0">{{ error }}</p>
+      <div v-if="error" class="flex flex-col items-center justify-center py-12 px-4 mb-6">
+        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-8 max-w-md w-full text-center">
+          <!-- Error Icon -->
+          <div class="mb-4 flex justify-center">
+            <svg
+              class="w-20 h-20 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <!-- Error Message -->
+          <h2 class="text-xl font-bold text-red-700 mb-2">Erro no Servidor</h2>
+          <p class="text-red-600 text-sm mb-4">{{ error }}</p>
+          <!-- Retry Button -->
+          <button
+            @click="carregarAgendamentos()"
+            class="mt-4 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg"
+          >
+            Tentar Novamente
+          </button>
+        </div>
       </div>
 
       <!-- Filters Card -->
@@ -36,39 +64,69 @@
         v-if="!loading && !error"
         class="bg-finx-gray-light rounded-xl p-4 sm:p-6 mb-6 border border-gray-200 w-full"
       >
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="flex-1">
-            <label class="block text-sm font-medium text-secondary mb-2">
-              Buscar por médico ou paciente
-            </label>
-            <input
-              v-model="searchTerm"
-              type="text"
-              placeholder="Digite o nome..."
-              class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all placeholder:text-finx-gray-1 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
-              @keyup.enter="aplicarFiltros"
-            />
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-secondary mb-2">
+                Buscar por médico ou paciente
+              </label>
+              <input
+                v-model="searchTerm"
+                type="text"
+                placeholder="Digite o nome..."
+                class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all placeholder:text-finx-gray-1 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                @keyup.enter="aplicarFiltros"
+              />
+            </div>
+
+            <div class="w-full md:w-48 md:min-w-48">
+              <label class="block text-sm font-medium text-secondary mb-2"> Ordenar por data de criação </label>
+              <select
+                v-model="ordenacaoSelecionada"
+                @change="aplicarOrdenacao"
+                class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+              >
+                <option value="DESC">Mais recente</option>
+                <option value="ASC">Mais antigo</option>
+              </select>
+            </div>
+
+            <div class="flex items-end gap-2 w-full md:w-auto">
+              <button
+                @click="limparFiltros"
+                class="w-full md:w-auto px-4 sm:px-6 py-2.5 bg-white border border-gray-300 hover:border-gray-400 text-secondary font-medium rounded-lg transition-all hover:bg-finx-gray-light text-sm sm:text-base"
+              >
+                Limpar
+              </button>
+              <button
+                @click="aplicarFiltros"
+                class="w-full md:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-primary to-finx-blue-1 hover:from-finx-blue-2 hover:to-finx-blue-1 text-white font-medium rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-primary/25 text-sm sm:text-base"
+              >
+                Pesquisar
+              </button>
+            </div>
           </div>
 
-          <div class="w-full md:w-48 md:min-w-48">
-            <label class="block text-sm font-medium text-secondary mb-2"> Ordenar por data </label>
-            <select
-              v-model="ordenacaoSelecionada"
-              @change="aplicarOrdenacao"
-              class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
-            >
-              <option value="DESC">Mais recente</option>
-              <option value="ASC">Mais antigo</option>
-            </select>
-          </div>
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="w-full md:w-48">
+              <label class="block text-sm font-medium text-secondary mb-2">
+                Data do Agendamento
+              </label>
+              <input
+                v-model="dataAgendamentoFiltro"
+                type="date"
+                class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
 
-          <div class="flex items-end w-full md:w-auto">
-            <button
-              @click="aplicarFiltros"
-              class="w-full md:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-primary to-finx-blue-1 hover:from-finx-blue-2 hover:to-finx-blue-1 text-white font-medium rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-primary/25 text-sm sm:text-base"
-            >
-              Pesquisar
-            </button>
+            <div class="w-full md:w-48">
+              <label class="block text-sm font-medium text-secondary mb-2"> Data de Criação </label>
+              <input
+                v-model="dataCriacaoFiltro"
+                type="date"
+                class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-finx-dark text-sm transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -76,11 +134,11 @@
       <!-- Pagination Top -->
       <div
         v-if="!loading && !error && agendamentos.length > 0"
-        class="flex flex-col items-center gap-4 rounded-xl p-4 sm:p-6 w-full"
+        class="flex flex-col sm:flex-row items-center justify-end gap-4 rounded-xl p-4 sm:p-6 w-full"
       >
-        <!-- <div class="text-sm text-text">
-          Página {{ paginacao.paginaAtual }} de {{ paginacao.totalDePaginas }}
-        </div> -->
+        <div class="text-text text-sm">
+          {{ agendamentos.length }} de {{ paginacao.totalDeItens }}
+        </div>
 
         <div class="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
           <button
@@ -131,11 +189,6 @@
         </div>
       </div>
 
-      <!-- Results Count -->
-      <div v-if="!loading && !error && agendamentos.length > 0" class="mb-4 text-text text-sm">
-        Mostrando {{ agendamentos.length }} de {{ paginacao.totalDeItens }} agendamentos
-      </div>
-
       <!-- Empty State -->
       <div
         v-if="!loading && !error && agendamentos.length === 0"
@@ -166,7 +219,7 @@
                   Data do Agendamento
                 </th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">
-                  Agendado em
+                  Data de Criação
                 </th>
               </tr>
             </thead>
@@ -228,11 +281,11 @@
       <!-- Pagination -->
       <div
         v-if="!loading && !error && agendamentos.length > 0"
-        class="flex flex-col items-center gap-4 rounded-xl p-4 sm:p-6 w-full"
+        class="flex flex-col sm:flex-row items-center justify-end gap-4 rounded-xl p-4 sm:p-6 w-full"
       >
-        <!-- <div class="text-sm text-text">
-          Página {{ paginacao.paginaAtual }} de {{ paginacao.totalDePaginas }}
-        </div> -->
+        <div class="text-text text-sm">
+          {{ agendamentos.length }} de {{ paginacao.totalDeItens }}
+        </div>
 
         <div class="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
           <button
@@ -296,6 +349,8 @@ const {
   paginacao,
   ordenacao,
   busca,
+  dataCriacaoFiltro,
+  dataAgendamentoFiltro,
   loading,
   error,
   carregarAgendamentos,
@@ -333,7 +388,36 @@ const paginasVisiveis = computed(() => {
 })
 
 const aplicarFiltros = async () => {
-  await buscar(searchTerm.value)
+  const dataCriacaoParam =
+    dataCriacaoFiltro.value && dataCriacaoFiltro.value.trim() !== ''
+      ? dataCriacaoFiltro.value.trim()
+      : null
+  const dataAgendamentoParam =
+    dataAgendamentoFiltro.value && dataAgendamentoFiltro.value.trim() !== ''
+      ? dataAgendamentoFiltro.value.trim()
+      : null
+
+
+  await carregarAgendamentos({
+    busca: searchTerm.value,
+    dataCriacao: dataCriacaoParam,
+    dataAgendamento: dataAgendamentoParam,
+    paginaAtual: 1,
+    ordenacao: ordenacao.value
+  })
+}
+
+const limparFiltros = async () => {
+  searchTerm.value = ''
+  dataCriacaoFiltro.value = ''
+  dataAgendamentoFiltro.value = ''
+  await carregarAgendamentos({
+    busca: '',
+    dataCriacao: null,
+    dataAgendamento: null,
+    paginaAtual: 1,
+    ordenacao: ordenacao.value
+  })
 }
 
 const aplicarOrdenacao = async () => {
