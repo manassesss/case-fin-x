@@ -1,0 +1,137 @@
+{
+  "agendamentos": [
+    {
+      "id": 1,
+      "medico": {
+        "nome": "Afonso Silva"
+      },
+      "paciente": {
+        "nome": "Gustavo Santos",
+        "dataNascimento": "2023-08-21"
+      },
+      "dataCriacao": "2024-09-20T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "medico": {
+        "nome": "Fernando Santos"
+      },
+      "paciente": {
+        "nome": "Jurandir Santos",
+        "dataNascimento": "1999-08-21"
+      },
+      "dataCriacao": "2024-09-20T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "medico": {
+        "nome": "Maria Oliveira"
+      },
+      "paciente": {
+        "nome": "Ana Costa",
+        "dataNascimento": "1985-03-15"
+      },
+      "dataCriacao": "2024-09-19T10:30:00Z"
+    },
+    {
+      "id": 4,
+      "medico": {
+        "nome": "Carlos Pereira"
+      },
+      "paciente": {
+        "nome": "João Silva",
+        "dataNascimento": "1978-11-08"
+      },
+      "dataCriacao": "2024-09-19T14:20:00Z"
+    },
+    {
+      "id": 5,
+      "medico": {
+        "nome": "Fernando Santos"
+      },
+      "paciente": {
+        "nome": "Pedro Alves",
+        "dataNascimento": "1992-05-12"
+      },
+      "dataCriacao": "2024-09-18T09:15:00Z"
+    },
+    {
+      "id": 6,
+      "medico": {
+        "nome": "Afonso Silva"
+      },
+      "paciente": {
+        "nome": "Lucas Mendes",
+        "dataNascimento": "2000-01-30"
+      },
+      "dataCriacao": "2024-09-18T16:45:00Z"
+    },
+    {
+      "id": 7,
+      "medico": {
+        "nome": "Patricia Souza"
+      },
+      "paciente": {
+        "nome": "Mariana Lima",
+        "dataNascimento": "1995-07-22"
+      },
+      "dataCriacao": "2024-09-17T11:00:00Z"
+    },
+    {
+      "id": 8,
+      "medico": {
+        "nome": "Roberto Martins"
+      },
+      "paciente": {
+        "nome": "Rafael Ferreira",
+        "dataNascimento": "1988-12-05"
+      },
+      "dataCriacao": "2024-09-17T13:30:00Z"
+    },
+    {
+      "id": 9,
+      "medico": {
+        "nome": "Maria Oliveira"
+      },
+      "paciente": {
+        "nome": "Carla Rodrigues",
+        "dataNascimento": "1990-04-18"
+      },
+      "dataCriacao": "2024-09-16T08:20:00Z"
+    },
+    {
+      "id": 10,
+      "medico": {
+        "nome": "Carlos Pereira"
+      },
+      "paciente": {
+        "nome": "Fernando Costa",
+        "dataNascimento": "1982-09-25"
+      },
+      "dataCriacao": "2024-09-16T15:10:00Z"
+    },
+    {
+      "id": 11,
+      "medico": {
+        "nome": "Afonso Silva"
+      },
+      "paciente": {
+        "nome": "Juliana Santos",
+        "dataNascimento": "1997-02-14"
+      },
+      "dataCriacao": "2024-09-15T10:00:00Z"
+    },
+    {
+      "id": 12,
+      "medico": {
+        "nome": "Fernando Santos"
+      },
+      "paciente": {
+        "nome": "Bruno Oliveira",
+        "dataNascimento": "1986-06-10"
+      },
+      "dataCriacao": "2024-09-15T14:45:00Z"
+    }
+  ]
+}
+

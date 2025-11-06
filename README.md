@@ -10,6 +10,7 @@ Este projeto foi desenvolvido como case técnico para a Fin-X, com o objetivo de
 - **Vite** - Build tool e dev server
 - **ESLint** - Linter para garantir qualidade de código
 - **Prettier** - Formatador de código
+- **json-server** - Mock da API REST
 
 ## 📦 Instalação
 
@@ -28,13 +29,55 @@ npm install
 
 ## 🏃 Como Executar
 
+### Mock da API
+
+Primeiro, inicie o servidor mockado da API:
+
+```bash
+npm run server
+```
+
+O servidor estará disponível em `http://localhost:3001`
+
+**Endpoint:** `GET http://localhost:3001/api/agendamentos`
+
+**Query Params:**
+- `paginaAtual` (int) - Número da página atual
+- `itensPorPagina` (int) - Quantidade de itens por página
+- `dataCriacao` (string) - Filtro por data no formato ISO 8601
+
+**Exemplos:**
+```bash
+# Listar todos os agendamentos
+GET http://localhost:3001/api/agendamentos
+
+# Com paginação
+GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=3
+
+# Com filtro de data
+GET http://localhost:3001/api/agendamentos?dataCriacao=2024-09-20T12:00:00Z
+
+# Com paginação e filtro
+GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=3&dataCriacao=2024-09-20T12:00:00Z
+```
+
 ### Desenvolvimento
+
+Em um terminal separado, inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
 O projeto estará disponível em `http://localhost:5173`
+
+**Ou execute ambos simultaneamente:**
+
+```bash
+npm run dev:all
+```
+
+Isso iniciará o servidor mockado e o frontend ao mesmo tempo.
 
 ### Build para Produção
 
@@ -50,7 +93,9 @@ npm run preview
 
 ## 🛠️ Scripts Disponíveis
 
-- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run dev` - Inicia o servidor de desenvolvimento (frontend)
+- `npm run server` - Inicia o servidor mockado da API (porta 3001)
+- `npm run dev:all` - Inicia o servidor mockado e o frontend simultaneamente
 - `npm run build` - Gera a build de produção
 - `npm run preview` - Preview da build de produção
 - `npm run lint` - Executa o ESLint e corrige problemas automaticamente
@@ -67,7 +112,9 @@ case-fin-x/
 │   ├── App.vue      # Componente raiz
 │   ├── main.js      # Ponto de entrada da aplicação
 │   └── style.css    # Estilos globais
-├── .eslintrc.cjs    # Configuração do ESLint
+├── db.json          # Dados mockados da API
+├── server.cjs       # Servidor mockado (json-server)
+├── eslint.config.js # Configuração do ESLint
 ├── .prettierrc.json # Configuração do Prettier
 ├── vite.config.js   # Configuração do Vite
 └── package.json     # Dependências do projeto
@@ -81,15 +128,16 @@ case-fin-x/
 - [x] .gitignore configurado
 - [x] Scripts de lint e format adicionados
 - [x] Estrutura de pastas organizada
+- [x] Mock da API com json-server configurado
+- [x] Endpoint `/api/agendamentos` com paginação e filtros
 
 ## 📝 Próximos Passos
 
 1. Implementar listagem de agendamentos cirúrgicos
 2. Adicionar filtros por médico e paciente
-3. Implementar paginação
+3. Implementar paginação no frontend
 4. Implementar ordenação por data
-5. Criar mock da API com json-server
-6. Melhorar UX/UI seguindo o design da Fin-X
+5. Melhorar UX/UI seguindo o design da Fin-X
 
 ## 🔗 Links Úteis
 
