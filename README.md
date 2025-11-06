@@ -8,6 +8,7 @@ Este projeto foi desenvolvido como case técnico para a Fin-X, com o objetivo de
 
 - **Vue.js 3** - Framework JavaScript progressivo
 - **Vite** - Build tool e dev server
+- **Tailwind CSS** - Framework CSS utilitário
 - **ESLint** - Linter para garantir qualidade de código
 - **Prettier** - Formatador de código
 - **json-server** - Mock da API REST
@@ -42,11 +43,13 @@ O servidor estará disponível em `http://localhost:3001`
 **Endpoint:** `GET http://localhost:3001/api/agendamentos`
 
 **Query Params:**
+
 - `paginaAtual` (int) - Número da página atual
 - `itensPorPagina` (int) - Quantidade de itens por página
 - `dataCriacao` (string) - Filtro por data no formato ISO 8601
 
 **Exemplos:**
+
 ```bash
 # Listar todos os agendamentos
 GET http://localhost:3001/api/agendamentos
@@ -105,22 +108,35 @@ npm run preview
 
 ```
 case-fin-x/
-├── public/          # Arquivos estáticos
+├── public/              # Arquivos estáticos
 ├── src/
-│   ├── assets/      # Recursos (imagens, fontes, etc)
-│   ├── components/  # Componentes Vue reutilizáveis
-│   ├── App.vue      # Componente raiz
-│   ├── main.js      # Ponto de entrada da aplicação
-│   └── style.css    # Estilos globais
-├── db.json          # Dados mockados da API
-├── server.cjs       # Servidor mockado (json-server)
-├── eslint.config.js # Configuração do ESLint
-├── .prettierrc.json # Configuração do Prettier
-├── vite.config.js   # Configuração do Vite
-└── package.json     # Dependências do projeto
+│   ├── assets/         # Recursos (imagens, fontes, etc)
+│   ├── components/     # Componentes Vue reutilizáveis
+│   │   └── AgendamentosList.vue
+│   ├── composables/    # Composables Vue (lógica reutilizável)
+│   │   └── useAgendamentos.js
+│   ├── services/       # Serviços de API
+│   │   └── api.js
+│   ├── utils/          # Funções utilitárias
+│   │   └── dateUtils.js
+│   ├── views/          # Views/páginas
+│   │   └── AgendamentosView.vue
+│   ├── App.vue         # Componente raiz
+│   ├── main.js         # Ponto de entrada da aplicação
+│   └── style.css       # Estilos globais
+├── db.json             # Dados mockados da API
+├── server.cjs          # Servidor mockado (json-server)
+├── tailwind.config.js  # Configuração do Tailwind CSS
+├── postcss.config.js   # Configuração do PostCSS
+├── eslint.config.js    # Configuração do ESLint
+├── .prettierrc.json    # Configuração do Prettier
+├── vite.config.js      # Configuração do Vite
+└── package.json        # Dependências do projeto
 ```
 
-## ✅ Checklist de Setup
+## ✅ Checklist de Implementação
+
+### Setup Inicial
 
 - [x] Projeto Vue.js 3 inicializado com Vite
 - [x] ESLint configurado
@@ -128,16 +144,32 @@ case-fin-x/
 - [x] .gitignore configurado
 - [x] Scripts de lint e format adicionados
 - [x] Estrutura de pastas organizada
+
+### Backend/Mock
+
 - [x] Mock da API com json-server configurado
 - [x] Endpoint `/api/agendamentos` com paginação e filtros
+- [x] Servidor mockado funcionando na porta 3001
+
+### Frontend
+
+- [x] Tela de listagem de agendamentos implementada
+- [x] Exibição de nome do médico
+- [x] Exibição de nome e idade do paciente
+- [x] Exibição de data de criação formatada
+- [x] Paginação implementada na interface
+- [x] Loading e estados de erro tratados
+- [x] Proxy configurado no Vite para evitar CORS
+- [x] Tailwind CSS configurado e integrado
+- [x] Design responsivo com Tailwind
+- [x] Cores da paleta Fin-X aplicadas no Tailwind
 
 ## 📝 Próximos Passos
 
-1. Implementar listagem de agendamentos cirúrgicos
-2. Adicionar filtros por médico e paciente
-3. Implementar paginação no frontend
-4. Implementar ordenação por data
-5. Melhorar UX/UI seguindo o design da Fin-X
+1. Adicionar filtros por médico e paciente
+2. Implementar ordenação por data (crescente/decrescente)
+3. Melhorar UX/UI seguindo o design da Fin-X
+4. Adicionar testes unitários
 
 ## 🔗 Links Úteis
 
