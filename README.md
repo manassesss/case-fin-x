@@ -2,17 +2,17 @@
 
 ## 📋 Sobre o Projeto
 
-Este projeto foi desenvolvido como case técnico para a Fin-X, com o objetivo de criar uma listagem otimizada de solicitações cirúrgicas, melhorando a usabilidade e performance em relação às telas anteriores.
+Este projeto foi desenvolvido como case técnico para a Fin-X, com o objetivo de criar uma listagem otimizada de solicitações cirúrgicas, melhorando a usabilidade e performance em relação às telas anteriores. A solução implementa paginação, filtros avançados e ordenação para facilitar a consulta de agendamentos cirúrgicos.
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Vue.js 3** - Framework JavaScript progressivo
+- **Vue.js 3** - Framework JavaScript progressivo com Composition API
 - **Vue Router 4** - Sistema de roteamento oficial do Vue
-- **Vite** - Build tool e dev server
-- **Tailwind CSS** - Framework CSS utilitário
+- **Vite** - Build tool e dev server de alta performance
+- **Tailwind CSS** - Framework CSS utilitário para design responsivo
 - **ESLint** - Linter para garantir qualidade de código
 - **Prettier** - Formatador de código
-- **json-server** - Mock da API REST
+- **json-server** - Mock da API REST para desenvolvimento
 
 ## 📦 Instalação
 
@@ -31,15 +31,45 @@ npm install
 
 ## 🏃 Como Executar
 
-### Mock da API
+### Opção 1: Executar tudo de uma vez (Recomendado)
 
-Primeiro, inicie o servidor mockado da API:
+```bash
+npm run dev:all
+```
+
+Isso iniciará o servidor mockado da API e o frontend simultaneamente.
+
+### Opção 2: Executar separadamente
+
+**Terminal 1 - Servidor Mock da API:**
 
 ```bash
 npm run server
 ```
 
 O servidor estará disponível em `http://localhost:3001`
+
+**Terminal 2 - Frontend:**
+
+```bash
+npm run dev
+```
+
+O projeto estará disponível em `http://localhost:5173`
+
+### Build para Produção
+
+```bash
+npm run build
+```
+
+### Preview da Build
+
+```bash
+npm run preview
+```
+
+## 📡 API Mock
 
 **Endpoint:** `GET http://localhost:3001/api/agendamentos`
 
@@ -59,150 +89,14 @@ O servidor estará disponível em `http://localhost:3001`
 GET http://localhost:3001/api/agendamentos
 
 # Com paginação
-GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=3
+GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=10
+
+# Com filtros
+GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=10&busca=afonso&ordenacao=DESC
 
 # Com filtro de data
-GET http://localhost:3001/api/agendamentos?dataCriacao=2024-09-20T12:00:00Z
-
-# Com paginação e filtro
-GET http://localhost:3001/api/agendamentos?paginaAtual=1&itensPorPagina=3&dataCriacao=2024-09-20T12:00:00Z
+GET http://localhost:3001/api/agendamentos?dataCriacao=2024-09-20&dataAgendamento=2024-10-05
 ```
-
-### Desenvolvimento
-
-Em um terminal separado, inicie o servidor de desenvolvimento:
-
-```bash
-npm run dev
-```
-
-O projeto estará disponível em `http://localhost:5173`
-
-**Ou execute ambos simultaneamente:**
-
-```bash
-npm run dev:all
-```
-
-Isso iniciará o servidor mockado e o frontend ao mesmo tempo.
-
-### Build para Produção
-
-```bash
-npm run build
-```
-
-### Preview da Build
-
-```bash
-npm run preview
-```
-
-## 🛠️ Scripts Disponíveis
-
-- `npm run dev` - Inicia o servidor de desenvolvimento (frontend)
-- `npm run server` - Inicia o servidor mockado da API (porta 3001)
-- `npm run dev:all` - Inicia o servidor mockado e o frontend simultaneamente
-- `npm run build` - Gera a build de produção
-- `npm run preview` - Preview da build de produção
-- `npm run lint` - Executa o ESLint e corrige problemas automaticamente
-- `npm run format` - Formata o código com Prettier
-
-## 📁 Estrutura do Projeto
-
-```
-case-fin-x/
-├── public/              # Arquivos estáticos
-├── src/
-│   ├── assets/         # Recursos (imagens, fontes, etc)
-│   ├── components/     # Componentes Vue reutilizáveis
-│   │   └── AgendamentosList.vue
-│   ├── composables/    # Composables Vue (lógica reutilizável)
-│   │   └── useAgendamentos.js
-│   ├── router/         # Configuração de rotas
-│   │   └── index.js    # Definição de rotas e navigation guards
-│   ├── services/       # Serviços de API
-│   │   └── api.js
-│   ├── utils/          # Funções utilitárias
-│   │   └── dateUtils.js
-│   ├── views/          # Views/páginas (rotas)
-│   │   └── AgendamentosView.vue
-│   ├── App.vue         # Componente raiz (usa router-view)
-│   ├── main.js         # Ponto de entrada da aplicação
-│   └── style.css       # Estilos globais
-├── db.json             # Dados mockados da API
-├── server.cjs          # Servidor mockado (json-server)
-├── tailwind.config.js  # Configuração do Tailwind CSS
-├── postcss.config.js   # Configuração do PostCSS
-├── eslint.config.js    # Configuração do ESLint
-├── .prettierrc.json    # Configuração do Prettier
-├── vite.config.js      # Configuração do Vite
-└── package.json        # Dependências do projeto
-```
-
-## 🛣️ Sistema de Rotas
-
-O projeto utiliza **Vue Router 4** para gerenciamento de rotas, demonstrando:
-
-- ✅ **Eficiência**: Uso de `createWebHistory` para URLs limpas
-- ✅ **Navigation Guards**: `beforeEach` para atualização de título da página
-- ✅ **Scroll Behavior**: Comportamento customizado de scroll ao navegar
-- ✅ **Meta Fields**: Metadados nas rotas (título, autenticação, etc.)
-- ✅ **Lazy Loading**: Estrutura preparada para code splitting
-- ✅ **Programmatic Navigation**: Uso de `useRoute` e `useRouter` nos componentes
-
-### Rotas Disponíveis:
-
-- `/` - Redireciona para `/agendamentos`
-- `/agendamentos` - Listagem de agendamentos cirúrgicos
-- `/*` - Rota catch-all que redireciona para `/agendamentos` (404)
-
-### Exemplo de Navegação Programática:
-
-```javascript
-import { useRouter, useRoute } from 'vue-router'
-
-const router = useRouter()
-const route = useRoute()
-
-// Navegar programaticamente
-router.push('/agendamentos')
-
-// Acessar informações da rota atual
-console.log(route.name)      // Nome da rota
-console.log(route.params)    // Parâmetros dinâmicos
-console.log(route.query)     // Query parameters
-```
-
-## ✅ Checklist de Implementação
-
-### Setup Inicial
-
-- [x] Projeto Vue.js 3 inicializado com Vite
-- [x] ESLint configurado
-- [x] Prettier configurado
-- [x] .gitignore configurado
-- [x] Scripts de lint e format adicionados
-- [x] Estrutura de pastas organizada
-
-### Backend/Mock
-
-- [x] Mock da API com json-server configurado
-- [x] Endpoint `/api/agendamentos` com paginação e filtros
-- [x] Servidor mockado funcionando na porta 3001
-
-### Frontend
-
-- [x] Tela de listagem de agendamentos implementada
-- [x] Exibição de nome do médico
-- [x] Exibição de nome e idade do paciente
-- [x] Exibição de data de criação formatada
-- [x] Paginação implementada na interface
-- [x] Loading e estados de erro tratados
-- [x] Proxy configurado no Vite para evitar CORS
-- [x] Tailwind CSS configurado e integrado
-- [x] Design responsivo com Tailwind
-- [x] Cores da paleta Fin-X aplicadas no Tailwind
 
 ## ✅ Funcionalidades Implementadas
 
@@ -229,16 +123,22 @@ console.log(route.query)     // Query parameters
 - ✅ Logo da empresa no header
 - ✅ Tabela responsiva
 - ✅ Feedback visual em todas as interações
+- ✅ Sistema de rotas com Vue Router
 
-## 📝 Próximos Passos (Opcional)
+## 🛠️ Scripts Disponíveis
 
-1. Adicionar testes unitários
-2. Implementar roteamento se necessário
-3. Adicionar mais atributos de acessibilidade
-4. Considerar internacionalização (i18n)
+- `npm run dev` - Inicia o servidor de desenvolvimento (frontend)
+- `npm run server` - Inicia o servidor mockado da API (porta 3001)
+- `npm run dev:all` - Inicia o servidor mockado e o frontend simultaneamente
+- `npm run build` - Gera a build de produção
+- `npm run preview` - Preview da build de produção
+- `npm run lint` - Executa o ESLint e corrige problemas automaticamente
+- `npm run format` - Formata o código com Prettier
 
 ## 🔗 Links Úteis
 
 - [Documentação Vue.js](https://vuejs.org/)
+- [Documentação Vue Router](https://router.vuejs.org/)
 - [Documentação Vite](https://vitejs.dev/)
+- [Documentação Tailwind CSS](https://tailwindcss.com/)
 - [Site Fin-X](https://finxapp.com.br/)
