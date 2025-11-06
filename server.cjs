@@ -16,23 +16,42 @@ function loadAgendamentos() {
 }
 
 // Middleware customizado para formatar a resposta conforme especificação
-server.get('/api/agendamentos', (req, res, next) => {
+server.get('/api/agendamentos', (req, res) => {
   const query = req.query
   const paginaAtual = parseInt(query.paginaAtual) || 1
   const itensPorPagina = parseInt(query.itensPorPagina) || 10
   const dataCriacao = query.dataCriacao
+  const busca = query.busca // Busca por médico ou paciente
+  const ordenacao = query.ordenacao || 'DESC' // ASC ou DESC, padrão DESC (mais recente primeiro)
 
   // Buscar todos os agendamentos
   let agendamentos = loadAgendamentos()
 
+  // Filtrar por busca (médico ou paciente) se fornecido
+  if (busca && busca.trim()) {
+    const searchTerm = busca.toLowerCase().trim()
+    agendamentos = agendamentos.filter(item => {
+      const nomeMedico = item.medico?.nome?.toLowerCase() || ''
+      const nomePaciente = item.paciente?.nome?.toLowerCase() || ''
+      return nomeMedico.includes(searchTerm) || nomePaciente.includes(searchTerm)
+    })
+  }
+
   // Filtrar por data se fornecido
   if (dataCriacao) {
     const filterDate = new Date(dataCriacao).toISOString().split('T')[0]
-    agendamentos = agendamentos.filter((item) => {
+    agendamentos = agendamentos.filter(item => {
       const itemDate = new Date(item.dataCriacao).toISOString().split('T')[0]
       return itemDate === filterDate
     })
   }
+
+  // Ordenar por data de criação
+  agendamentos.sort((a, b) => {
+    const dataA = new Date(a.dataCriacao).getTime()
+    const dataB = new Date(b.dataCriacao).getTime()
+    return ordenacao.toUpperCase() === 'ASC' ? dataA - dataB : dataB - dataA
+  })
 
   // Calcular paginação
   const totalDeItens = agendamentos.length
@@ -47,7 +66,9 @@ server.get('/api/agendamentos', (req, res, next) => {
   if (paginaAtual < totalDePaginas) {
     nextParams.set('paginaAtual', paginaAtual + 1)
     nextParams.set('itensPorPagina', itensPorPagina)
+    if (busca) nextParams.set('busca', busca)
     if (dataCriacao) nextParams.set('dataCriacao', dataCriacao)
+    nextParams.set('ordenacao', ordenacao)
   }
   const nextPageUrl = paginaAtual < totalDePaginas ? `${baseUrl}?${nextParams.toString()}` : null
 
@@ -55,7 +76,9 @@ server.get('/api/agendamentos', (req, res, next) => {
   if (paginaAtual > 1) {
     prevParams.set('paginaAtual', paginaAtual - 1)
     prevParams.set('itensPorPagina', itensPorPagina)
+    if (busca) prevParams.set('busca', busca)
     if (dataCriacao) prevParams.set('dataCriacao', dataCriacao)
+    prevParams.set('ordenacao', ordenacao)
   }
   const prevPageUrl = paginaAtual > 1 ? `${baseUrl}?${prevParams.toString()}` : null
 
